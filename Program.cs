@@ -9,8 +9,15 @@ namespace TradeApp
 
             using var stream = File.OpenRead( "TradeData.txt" );
 
-            var processor = new TradeProcessor();
-            processor.ProcessTrades( stream );
+            var provider = new FileTradeDataProvider( stream );
+            var store = new JsonTradeStore();
+
+            var validator = new SimpleTradeValidator();
+            var mapper = new SimpleTradeMapper();
+            var parser = new SimpleTradeParser( validator, mapper );
+
+            var processor = new TradeProcessor( provider, store, parser );
+            processor.ProcessTrades();
         }
     }
 }
